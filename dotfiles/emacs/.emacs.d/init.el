@@ -232,4 +232,3 @@
 (defalias 'c++-mode 'simpc-mode)
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode))
-(use-package vterm)

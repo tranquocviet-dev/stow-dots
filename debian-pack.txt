@@ -4,3 +4,17 @@ dkms
 build-essential
 nvidia-driver
 firmware-misc-nonfree
+cmake
+libtool
+eza
+bspwm
+fastfetch
+emacs
+fontconfig
+i3
+kitty
+starship
+sxhkd
+zsh
+git
+curl

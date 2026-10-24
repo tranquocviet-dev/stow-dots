@@ -1,3 +1,4 @@
+forgejo@192.168.22.94:dice/stow-dots.git
 linux-headers-$(uname -r)
 dkms
 build-essential

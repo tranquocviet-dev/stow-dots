@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# If at least one window is floating, snap all windows to tiled; otherwise, float all
+if [ -n "$(bspc query -N -d focused -n .window.floating)" ]; then
+	for node in $(bspc query -N -d focused -n .window); do
+		bspc node "$node" -t tiled
+	done
+else
+	for node in $(bspc query -N -d focused -n .window); do
+		bspc node "$node" -t floating
+	done
+fi

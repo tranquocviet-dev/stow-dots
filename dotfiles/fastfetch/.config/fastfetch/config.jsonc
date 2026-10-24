@@ -1,0 +1,44 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "display": {
+  	"color": {
+			"keys": "red",
+			"title": "red",
+		}
+  },
+  "modules": [
+    "title",
+    "separator",
+    "kernel",
+    "uptime",
+    {
+    	"type": "packages",
+    	"format": "{nix-system} (nix-system)",
+    },
+    "shell",
+    "wm",
+    {
+      "type": "gpu",
+      "format": "{name}",
+    },
+    "memory",
+    "swap",
+    {
+      "type": "disk",
+      "format": "{size-used} / {size-total} ({size-percentage})",
+      "key": "Disk",
+    },
+    {
+      "type": "disk",
+      "format": "{size-free}",
+      "key": "Free",
+    },
+    "break",
+    "colors"
+  ],
+  "logo": {
+    "source": "~/.config/fastfetch/rin.jpg",
+    "type": "kitty",
+    "height": 18,
+  }
+}

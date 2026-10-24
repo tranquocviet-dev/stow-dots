@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Pick a random image recursively
+WALLPAPER=$(find ~/Pictures/Wallpapers -type f \( -iname "*.jpg" -o -iname "*.png" -o -iname "*.webp" \) | shuf -n 1)
+
+# Apply to all active xfdesktop monitors/workspaces
+for prop in $(xfconf-query -c xfce4-desktop -l | grep "last-image$"); do
+  xfconf-query -c xfce4-desktop -p "$prop" -s "$WALLPAPER"
+done

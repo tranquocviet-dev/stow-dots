@@ -1,0 +1,10 @@
+// Modularized niri config
+include "modules/v5.kdl"
+include "modules/inputs.kdl"
+include "modules/outputs.kdl"
+include "modules/outputs.kdl"
+include "modules/window-rules.kdl"
+include "modules/misc.kdl"
+include "modules/binds.kdl"
+include "modules/environment.kdl"
+include "modules/layout.kdl"

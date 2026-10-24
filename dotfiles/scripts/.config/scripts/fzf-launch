@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+selected=$(compgen -c | sort -u | fzf --prompt="Launch: " --layout=reverse --border=rounded)
+
+if [ -n "$selected" ]; then
+ nohup "$selected" >/dev/null 2>&1 &
+ disown
+fi

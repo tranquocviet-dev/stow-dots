@@ -1,0 +1,11 @@
+* Dice's Stow dot(file)s
+** Programs to install
+- emacs
+- bspwm
+- i3wm
+- rofi
+- kitty
+- fastfetch
+- starship
+- zsh
+- sxhkd

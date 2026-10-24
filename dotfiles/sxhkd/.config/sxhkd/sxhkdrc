@@ -1,0 +1,88 @@
+# Close / Kill active window
+super + shift + q
+	bspc node -c
+
+# Switch to desktop 1-9
+super + {1-9}
+	bspc desktop -f '^{1-9}'
+
+# Send focused window to desktop 1-9
+super + shift + {1-9}
+	bspc node -d '^{1-9}'
+
+# Custom wallpaper script
+super + shift + w
+	~/.config/scripts/final.sh
+
+super + ctrl + w
+	~/.config/scripts/togwall
+
+# Application launcher
+super + d
+      	rofi -show drun
+
+# Area selection directly to clipboard
+super + Print
+	maim -s -u | xclip -selection clipboard -t image/png
+
+# Full screen directly to clipboard
+ctrl + super + Print
+	maim -u | xclip -selection clipboard -t image/png
+
+# Quit bspwm / Exit session
+super + shift + Escape
+	bspc quit
+
+# Toggle focused window between floating and tiled
+super + space
+# 	bspc node -t ~floating
+
+# Toggle all windows on the current desktop between floating and tiled
+super + t
+	~/.config/bspwm/toggle-all
+
+# Toggle fullscreen
+super + f
+	bspc node -t ~fullscreen
+
+# Toggle pseudo-tiled (tiled position, but floating size)
+super + shift + t
+	bspc node -t ~pseudo_tiled
+
+# Terminal emulator
+super + Return
+	kitty
+
+super + shift + z
+	boomer
+
+super + shift + r
+	pkill -USR1 sxhkd
+
+# Focus node (window) in a direction (Vim keys)
+super + {h,j,k,l}
+	bspc node -f {west,south,north,east}
+
+# Focus node in a direction (Arrow keys)
+super + {Left,Down,Up,Right}
+	bspc node -f {west,south,north,east}
+
+# Cycle focus to the next/previous window in the desktop
+super + {comma,period}
+	bspc node -f {prev,next}.local.leaf
+
+# Swap window with another in a direction (Vim keys)
+super + shift + {h,j,k,l}
+	bspc node -s {west,south,north,east}
+
+# Swap window with another in a direction (Arrow keys)
+super + shift + {Left,Down,Up,Right}
+	bspc node -s {west,south,north,east}
+
+# Move window to desktop 1-9 (stay on current workspace)
+super + shift + {1-9,0}
+	bspc node -d '^{1-9,10}'
+
+# Move window to desktop 1-9 AND follow focus to that workspace
+super + ctrl + {1-9,0}
+	bspc node -d '^{1-9,10}' --follow

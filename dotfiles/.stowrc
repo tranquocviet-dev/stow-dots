@@ -1,0 +1,5 @@
+--target=/home/dice
+--verbose=1
+--ignore=\.git
+--ignore=\.stowrc
+--ignore=^README\..*$

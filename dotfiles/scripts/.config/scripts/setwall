@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/icewm"
+STATE_FILE="$STATE_DIR/wallpaper"
+TOGGLE_STATE="$STATE_DIR/toggle_state"
+SOLID_IMAGE="$HOME/.config/icewm/wallpapers/solid.png"
+
+load_cached() {
+	if [ -s "$STATE_FILE" ]; then
+		# Strip only CR and LF to preserve file paths with spaces
+		IMG_PATH=$(tr -d '\r\n' < "$STATE_FILE" | head -n 1)
+		IMG_PATH="${IMG_PATH/#\~/$HOME}"
+
+		if [ -f "$IMG_PATH" ]; then
+			xwallpaper --zoom "$IMG_PATH"
+			printf '%s' "image" > "$TOGGLE_STATE"
+			return 0
+		fi
+	fi
+	return 1
+}
+
+load_solid() {
+	if [ -f "$SOLID_IMAGE" ]; then
+		xwallpaper --zoom "$SOLID_IMAGE"
+		printf '%s' "solid" > "$TOGGLE_STATE"
+		return 0
+	fi
+	return 1
+}
+
+case "${1:-}" in
+	# Mode 1: Picker Dialog
+	-p|--pick)
+		FILE=$(zenity --file-selection \
+			--title="Select Wallpaper" \
+			--file-filter="Images (png, jpg, jpeg, webp) | *.png *.jpg *.jpeg *.webp" \
+			--file-filter="All files | *" 2>/dev/null) || true
+
+		if [ -n "${FILE:-}" ] && [ -f "$FILE" ]; then
+			mkdir -p "$STATE_DIR"
+			printf '%s\n' "$FILE" > "$STATE_FILE"
+			xwallpaper --zoom "$FILE"
+			printf '%s' "image" > "$TOGGLE_STATE"
+		fi
+		exit 0
+		;;
+
+	# Mode 2: Force cached image
+	-c|--cached|--force-cached)
+		if ! load_cached; then
+			echo "Error: No valid cached wallpaper found in $STATE_FILE" >&2
+			exit 1
+		fi
+		exit 0
+		;;
+
+	# Mode 3: Force solid color image
+	-s|--solid|--force-solid)
+		if ! load_solid; then
+			echo "Error: Solid image not found at $SOLID_IMAGE" >&2
+			exit 1
+		fi
+		exit 0
+		;;
+
+	# Default Mode: Restore cached wallpaper; fall back to solid image
+	*)
+		if ! load_cached; then
+			load_solid || true
+		fi
+		;;
+esac

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+window=$(wmctrl -l | fzf --prompt="Focus: " --layout=reverse --border=rounded)
+if [ -n "$window" ]; then
+	win_id=$(echo "$window" | awk '{print $1}')
+	wmctrl -i -a "$win_id"
+fi

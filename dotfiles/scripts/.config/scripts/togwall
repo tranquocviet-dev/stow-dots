@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/icewm"
+WALLPAPER_FILE="$STATE_DIR/wallpaper"
+TOGGLE_STATE="$STATE_DIR/toggle_state"
+NORMAL_IMAGE="$HOME/Pictures/Wallpapers/hang-son-doong-px-3098-1795814254.jpg"
+
+PICOM_CONFIG_NORMAL="$HOME/.config/picom/picom.conf"
+PICOM_CONFIG_TRANSPARENT="$HOME/.config/picom/picom-transparent.conf"
+
+mkdir -p "$STATE_DIR"
+
+# Function to determine screen resolution and aspect ratio, then set wallpaper accordingly
+set_wallpaper() {
+  local img="$1"
+  if [ ! -f "$img" ]; then
+    echo "Error: Image file not found: $img" >&2
+    return 1
+  fi
+
+  # Determine image dimensions
+  read -r width height <<< "$(identify -format "%w %h" "$img" 2>/dev/null)"
+  
+  if [ -z "$width" ] || [ -z "$height" ]; then
+    xwallpaper --daemon --zoom "$img"
+    return 0
+  fi
+
+  # Try to get screen resolution for precise ratio comparison
+  local screen_w="" screen_h=""
+  if command -v xrandr &>/dev/null; then
+    read -r screen_w screen_h <<< "$(xrandr 2>/dev/null | awk '/\bconnected/ {getline; print $1; exit}' | tr 'x' ' ')"
+  elif command -v xdpyinfo &>/dev/null; then
+    read -r screen_w screen_h <<< "$(xdpyinfo 2>/dev/null | awk '/dimensions:/ {print $2}' | tr 'x' ' ')"
+  fi
+
+  local style="zoom"
+  if [ -n "$screen_w" ] && [ -n "$screen_h" ] && [ "$screen_h" -gt 0 ] && [ "$screen_w" -gt 0 ]; then
+    # Compare aspect ratios using cross-multiplication to avoid floats
+    local img_ratio_side=$(( width * screen_h ))
+    local screen_ratio_side=$(( screen_w * height ))
+
+    if [ "$height" -ge "$width" ]; then
+      style="maximize"
+    elif [ "$img_ratio_side" -lt "$screen_ratio_side" ]; then
+      style="zoom"
+    else
+      style="maximize"
+    fi
+  else
+    # Fallback heuristic if screen dimensions cannot be fetched
+    if [ "$height" -ge "$width" ]; then
+      style="maximize"
+    else
+      style="zoom"
+    fi
+  fi
+
+  xwallpaper --daemon --"$style" "$img"
+}
+
+# Function to restart picom with a specific config
+switch_picom() {
+  local config_file="$1"
+  if [ -f "$config_file" ]; then
+    pkill picom || true
+    picom --config "$config_file" -b
+  fi
+}
+
+set_normal() {
+  if [ -f "$NORMAL_IMAGE" ]; then
+    set_wallpaper "$NORMAL_IMAGE"
+    printf '%s' "normal" > "$TOGGLE_STATE"
+    switch_picom "$PICOM_CONFIG_NORMAL"
+  else
+    echo "Error: Normal image not found at $NORMAL_IMAGE" >&2
+    exit 1
+  fi
+}
+
+# Check for --reset or --init argument (used on WM startup)
+if [[ "${1:-}" == "--reset" || "${1:-}" == "--init" || "${1:-}" == "-r" ]]; then
+  set_normal
+  exit 0
+fi
+
+# 1. Determine the current mode (defaults to "cached" so the first toggle loads NORMAL_IMAGE)
+MODE="cached"
+if [ -s "$TOGGLE_STATE" ]; then
+    MODE=$(tr -d '\r\n' < "$TOGGLE_STATE")
+fi
+
+# 2. Normal toggle execution
+if [ "$MODE" = "cached" ]; then
+    set_normal
+else
+    # Switch to cached wallpaper
+    if [ -s "$WALLPAPER_FILE" ]; then
+        IMG_PATH=$(tr -d '\r\n' < "$WALLPAPER_FILE")
+        IMG_PATH="${IMG_PATH/#\~/$HOME}"
+        if [ -f "$IMG_PATH" ]; then
+            set_wallpaper "$IMG_PATH"
+            printf '%s' "cached" > "$TOGGLE_STATE"
+            switch_picom "$PICOM_CONFIG_TRANSPARENT"
+            exit 0
+        fi
+    fi
+
+    # Fallback to NORMAL_IMAGE if the cached wallpaper is missing or invalid
+    set_normal
+fi

@@ -25,3 +25,5 @@ zinit light zsh-users/zsh-autosuggestions
 
 # Load syntax highlighting (optional but recommended)
 zinit light zsh-users/zsh-syntax-highlighting
+
+zinit light zsh-users/zsh-completions

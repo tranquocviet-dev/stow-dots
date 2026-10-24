@@ -1,4 +1,4 @@
-* Dice's Stow dot(file)s
+* Stow dot(file)s
 ** Programs to install
 - emacs
 - bspwm

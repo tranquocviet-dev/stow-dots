@@ -1,0 +1,5 @@
+linux-headers-$(uname -r)
+dkms
+build-essential
+nvidia-driver
+firmware-misc-nonfree

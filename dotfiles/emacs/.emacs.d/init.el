@@ -11,7 +11,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t) ; Automatically install missing packages via MELPA
 (set-face-attribute 'default nil
-                    :family "Aporetic Sans Mono"
+                    :family "AporeticSansMono Nerd Font"
                     :height 140
                     :weight 'normal)
 (set-face-attribute 'variable-pitch nil
@@ -46,10 +46,9 @@
   (completion-auto-select nil)
   (completions-sort 'historical)
   (minibuffer-visible-completions t))
-(use-package catppuccin-theme
+(use-package monokai-theme
   :config
-  (setq catppuccin-flavor 'frappe)
-  (load-theme 'catppuccin :no-confirm))
+  (load-theme 'monokai 't))
 (use-package qml-mode
   :mode "\\.qml$")
 (use-package completion-preview

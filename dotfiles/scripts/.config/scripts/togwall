@@ -4,7 +4,7 @@ set -euo pipefail
 STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/icewm"
 WALLPAPER_FILE="$STATE_DIR/wallpaper"
 TOGGLE_STATE="$STATE_DIR/toggle_state"
-NORMAL_IMAGE="$HOME/Pictures/Wallpapers/hang-son-doong-px-3098-1795814254.jpg"
+NORMAL_IMAGE="$HOME/Pictures/debian-wall.png"
 
 PICOM_CONFIG_NORMAL="$HOME/.config/picom/picom.conf"
 PICOM_CONFIG_TRANSPARENT="$HOME/.config/picom/picom-transparent.conf"

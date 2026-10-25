@@ -2,6 +2,35 @@
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' menu select
 
+
+# Where to save the history file
+HISTFILE=~/.zsh_history
+
+# Number of commands to keep in memory (history command)
+HISTSIZE=10000
+
+# Number of commands to save in the history file
+SAVEHIST=10000
+
+# Share history between multiple active terminal sessions
+setopt SHARE_HISTORY
+
+# Append to history file rather than overwriting it completely
+setopt APPEND_HISTORY
+
+# Write the history file in the format : start:elapsed;command
+setopt EXTENDED_HISTORY
+
+# Expel duplicate lines from history
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+
+# Do not store history lines that start with a space (useful for sensitive commands)
+setopt HIST_IGNORE_SPACE
+
+# Remove superfluous blanks from each command line being added to the history list
+setopt HIST_REDUCE_BLANKS
+
 # Your custom aliases
 alias ls="eza"
 alias server-rebuild="nh os switch -H server --target-host root@server"
@@ -27,3 +56,4 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-syntax-highlighting
 
 zinit light zsh-users/zsh-completions
+

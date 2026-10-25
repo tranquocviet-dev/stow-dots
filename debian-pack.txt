@@ -18,3 +18,4 @@ sxhkd
 zsh
 git
 curl
+keyboard-config

@@ -25,8 +25,6 @@ bspc config pointer_modifier mod4
 bspc config pointer_action1 move
 bspc config pointer_action3 resize_corner
 bspc config ignore_ewmh_focus false
-xsetroot -cursor_name left_ptr &
-
 
 /run/current-system/sw/libexec/polkit-gnome-authentication-agent-1 &
 
@@ -35,7 +33,13 @@ emacs --daemon &
 
 # Float all windows by default, centered, with a consistent initial size
 ~/.config/scripts/togwall --reset &
-polybar &
+
+# Kill any existing bar instances first
+pgrep -x lemonbar && killall lemonbar
+
+# Launch bspwm lemonbar script in background
+~/.config/scripts/lemonbar.sh &
+
 dunst &
 # Example inside i3 config or bspwmrc
 picom --config ~/.config/picom/picom.conf &

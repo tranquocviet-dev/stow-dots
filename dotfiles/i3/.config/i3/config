@@ -155,9 +155,9 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit' -B 'Shutdown' 'shutdown now'"
 
-bindsym $mod+Shift+w exec "~/.config/scripts/recursive-xwallpaper.sh"
+bindsym $mod+Shift+w exec "~/.config/scripts/final.sh"
 
-bindsym $mod+Ctrl+w exec "xwallpaper --zoom ~/Pictures/Wallpapers/hang-son-doong-px-3098-1795814254.jpg"
+bindsym $mod+Ctrl+w exec "~/.config/scripts/togwall"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -216,9 +216,12 @@ exec --no-startup-id systemctl --user import-environment DISPLAY XAUTHORITY WAYL
 # Notify systemd that the graphical session is active (triggers startWithUserSession = "graphical")
 exec --no-startup-id systemctl --user start graphical-session.target
 
+exec --no-startup-id xrandr --output DP-2 --mode 1920x1080 --rate 144 --dpi 96
 exec --no-startup-id fcitx5
-exec --no-startup-id xwallpaper --zoom ~/Pictures/Wallpapers/hang-son-doong-px-3098-1795814254.jpg
-exec --no-startup-id /run/current-system/sw/libexec/polkit-gnome-authentication-agent-1
+exec --no-startup-id picom
+exec --no-startup-id dunst
+exec --no-startup-id xwallpaper --zoom ~/Pictures/debian-wall.png
 
 exec --no-startup-id emacsclient --eval "(kill-emacs)" || true
 exec --no-startup-id emacs --daemon
+

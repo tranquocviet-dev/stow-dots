@@ -57,3 +57,5 @@ zinit light zsh-users/zsh-syntax-highlighting
 
 zinit light zsh-users/zsh-completions
 
+export PATH="$HOME/.nimble/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"

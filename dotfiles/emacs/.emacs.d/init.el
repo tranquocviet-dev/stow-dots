@@ -11,11 +11,11 @@
 (require 'use-package)
 (setq use-package-always-ensure t) ; Automatically install missing packages via MELPA
 (set-face-attribute 'default nil
-                    :family "AporeticSansMono Nerd Font"
+                    :family "IBM Plex Mono"
                     :height 140
                     :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-  		    :family "Aporetic Sans"
+  		    :family "IBM Plex Sans"
   		    :height 1.0
   		    :weight 'normal)
 (set-face-attribute 'fixed-pitch nil

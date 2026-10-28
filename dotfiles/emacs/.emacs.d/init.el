@@ -1,21 +1,25 @@
 ;; -*- lexical-binding: t -*-
+(setq create-lockfiles nil) ; Set to t if you want locks, but storing them centrally requires extra setup
+(setq backup-directory-alist `(("." . ,(expand-file-name "emacs/backups" user-emacs-directory))))
+(setq auto-save-default t)
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name "emacs/autosaves/" user-emacs-directory) t)))
+;; 1 package setup
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
-
-;; Automatically bootstrap use-package if not installed
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-
 (require 'use-package)
 (setq use-package-always-ensure t) ; Automatically install missing packages via MELPA
+;; visual
 (set-face-attribute 'default nil
-                    :family "IBM Plex Mono"
+                    :family "Iosevka"
                     :height 140
                     :weight 'normal)
 (set-face-attribute 'variable-pitch nil
-  		    :family "IBM Plex Sans"
+  		    :family "Iosevka Aile"
   		    :height 1.0
   		    :weight 'normal)
 (set-face-attribute 'fixed-pitch nil
@@ -28,7 +32,12 @@
 (scroll-bar-mode -1)
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
-;; Persist history over Emacs restarts
+(use-package modus-themes
+  :config
+  (load-theme 'modus-vivendi-tinted 't))
+(use-package mixed-pitch
+  :hook (org-mode . mixed-pitch-mode))
+;; 2 emacs command handling
 (use-package savehist
   :init
   (savehist-mode 1))
@@ -46,11 +55,10 @@
   (completion-auto-select nil)
   (completions-sort 'historical)
   (minibuffer-visible-completions t))
-(use-package monokai-theme
-  :config
-  (load-theme 'monokai 't))
-(use-package qml-mode
-  :mode "\\.qml$")
+
+;; 3 completion suite
+;; 3.1 completion-preview-mode (native)
+
 (use-package completion-preview
   :ensure nil ; Built-in to Emacs 30+
   :demand t
@@ -64,23 +72,49 @@
   :config
   (setq completion-preview-minimum-symbol-length 2)
   (global-completion-preview-mode 1))
-(use-package apheleia
-  :config
-  (setf (alist-get 'alejandra apheleia-formatters)
-        '("alejandra" "--quiet" "-"))
-  (setf (alist-get 'nix-mode apheleia-mode-alist) '(alejandra))
-  (setf (alist-get 'simpc-mode apheleia-mode-alist) '(clang-format))
-  (apheleia-global-mode 1))
+
+;; 3.2 company-mode
+
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (global-company-mode nil))
+
+;; 4 format-on-save
+
+;; (use-package apheleia
+;;   :config
+;;   (setf (alist-get 'alejandra apheleia-formatters)
+;;         '("alejandra" "--quiet" "-"))
+;;   (setf (alist-get 'nix-mode apheleia-mode-alist) '(alejandra))
+;;   (setf (alist-get 'simpc-mode apheleia-mode-alist) '(clang-format))
+;;   (apheleia-global-mode 1))
+
+;; 5 language support
+(use-package web-mode
+  :ensure t
+  :mode
+  (("\\.phtml\\'" . web-mode)
+   ("\\.php\\'" . web-mode)
+   ("\\.tpl\\'" . web-mode)
+   ("\\.[agj]sp\\'" . web-mode)
+   ("\\.as[cp]x\\'" . web-mode)
+   ("\\.erb\\'" . web-mode)
+   ("\\.mustache\\'" . web-mode)
+   ("\\.djhtml\\'" . web-mode)))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(require 'simpc-mode)
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
+(defalias 'c-mode 'simpc-mode)
+(defalias 'c++-mode 'simpc-mode)
 (use-package sql
   :custom
   (sql-mysql-program "mariadb")
   (sql-connection-alist
-   '((lamp-local
+   '((sql-conn
       (sql-product 'mysql)
-      (sql-server "localhost")
-      (sql-user "lamp_user")
-      (sql-database "lamp_db")
-      (sql-port 3306)
+      (sql-user "root")
+      (sql-database "joke_basic")
       (sql-options '("--table" "--unbuffered")))))
   :config
   (sql-set-product-feature 'mysql :prompt-regexp "^\\(MariaDB\\|MySQL\\) \\[[^]]*\\]> *")
@@ -96,12 +130,15 @@
   (("C-c a" . org-agenda)))
 (use-package nix-mode
   :mode "\\.nix\\'")
-(use-package php-mode
-  :mode "\\.php\\'")
 (use-package typst-ts-mode
   :ensure t
   :mode "\\.typ\\'"
   :hook ((typst-ts-mode . eglot-ensure)))
+(use-package qml-mode
+  :mode "\\.qml$")
+
+;; 5.1 lsp
+
 (use-package eglot
   :hook (((prog-mode) . (lambda ()
                           (unless (derived-mode-p 'emacs-lisp-mode)
@@ -112,6 +149,9 @@
   (add-to-list 'eglot-server-programs '(typst-ts-mode . ("tinymist" "lsp")))
   (add-to-list 'eglot-server-programs '((qml-mode qml-ts-mode) . ("qmlls" "-E")))
   (add-to-list 'eglot-server-programs '(simpc-mode . ("clangd"))))
+
+;; 6 misc
+
 (use-package pdf-tools
   :init
   (pdf-tools-install :no-query)
@@ -208,26 +248,25 @@
          ("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
          ("C-c C-<" . mc/mark-all-like-this)))
-;; 1. Store all backup files (~ files) in a central directory
-(setq backup-directory-alist `(("." . ,(expand-file-name "emacs/backups" user-emacs-directory))))
-
-;; 2. Store all auto-save files (# files) in a central directory
-(setq auto-save-default t)
-(setq auto-save-file-name-transforms
-      `((".*" ,(expand-file-name "emacs/autosaves/" user-emacs-directory) t)))
-
-;; Optional: Also handle lock files (.#files) if desired
-(setq create-lockfiles nil) ; Set to t if you want locks, but storing them centrally requires extra setup
 (defun kill-other-buffers ()
   "Kill all buffers except the current one."
   (interactive)
   (mapc #'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-hook 'before-save-hook #'delete-trailing-whitespace)
 
-(require 'simpc-mode)
-(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
-(defalias 'c-mode 'simpc-mode)
-(defalias 'c++-mode 'simpc-mode)
-(use-package mixed-pitch
-  :hook (org-mode . mixed-pitch-mode))
+(use-package smartparens
+  :ensure t
+  :config
+  (smartparens-global-mode t))
+(setq modus-themes-italic-constructs t)
+(setq modus-themes-bold-constructs t)
+(setq modus-themes-mixed-fonts t) ; Helps when mixing fixed-pitch and variable-pitch fonts in Org mode
+(use-package org-appear
+  :ensure t
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-auto-links t
+        org-appear-auto-emphasis t
+        org-appear-auto-entities t
+        org-appear-auto-keywords t))

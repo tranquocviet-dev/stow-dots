@@ -1,15 +1,16 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-$username \
+$username\
+@\
 $hostname \
 $directory\
 $git_branch\
-$git_status 
+$git_status \
 """
 
 [directory]
-style = "blue"
+style = "purple"
 truncation_length = 3
 
 [git_branch]
@@ -21,15 +22,15 @@ truncation_symbol = ""
 [git_status]
 format = "[[($conflicted$untracked$modified$staged$renamed$deleted)](218)($ahead_behind$stashed)]($style)"
 style = "cyan"
-conflicted = " c"
-untracked = " u"
-modified = " m"
-staged = " s"
-renamed = " r"
-deleted = " d"
-stashed = " S"
-ahead = " a"
-behind = " b"
+conflicted = " con"
+untracked = " unt"
+modified = " mod"
+staged = " stg"
+renamed = " rnm"
+deleted = " del"
+stashed = " sts"
+ahead = " ahd"
+behind = " bhd"
 
 [git_state]
 format = '\([$state($progress_current/$progress_total)]($style)\) '
@@ -38,8 +39,11 @@ style = "bright-black"
 [username]
 show_always = true
 format = '[$user]($style)'
+style_user = "bold blue"
+style_root = "bold cyan"
 
 [hostname]
 format = "[$hostname]($style)"
+style = "bold bright-white"
 disabled = false
 ssh_only = false

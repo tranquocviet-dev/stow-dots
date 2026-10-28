@@ -220,8 +220,7 @@ exec --no-startup-id xrandr --output DP-2 --mode 1920x1080 --rate 144 --dpi 96
 exec --no-startup-id fcitx5
 exec --no-startup-id picom
 exec --no-startup-id dunst
-exec --no-startup-id xwallpaper --zoom ~/Pictures/debian-wall.png
+exec --no-startup-id ~/.config/scripts/togwall --reset &
 
 exec --no-startup-id emacsclient --eval "(kill-emacs)" || true
 exec --no-startup-id emacs --daemon
-

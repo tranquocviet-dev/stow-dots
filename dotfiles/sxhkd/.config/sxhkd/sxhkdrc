@@ -43,7 +43,7 @@ super + t
 
 # Toggle fullscreen
 super + f
-	bspc node -t ~fullscreen
+	bspc node --state ~fullscreen
 
 # Toggle pseudo-tiled (tiled position, but floating size)
 super + shift + t

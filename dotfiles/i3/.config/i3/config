@@ -207,7 +207,6 @@ bar {
 }
 
 default_border none
-default_floating_border none
 hide_edge_borders smart
 
 # Import GUI environment variables into systemd

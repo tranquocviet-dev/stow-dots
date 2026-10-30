@@ -4,7 +4,9 @@
 (setq auto-save-default t)
 (setq auto-save-file-name-transforms
       `((".*" ,(expand-file-name "emacs/autosaves/" user-emacs-directory) t)))
+
 ;; 1 package setup
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
@@ -13,9 +15,11 @@
   (package-install 'use-package))
 (require 'use-package)
 (setq use-package-always-ensure t) ; Automatically install missing packages via MELPA
+
 ;; visual
+
 (set-face-attribute 'default nil
-                    :family "Iosevka Slab"
+                    :family "Iosevka"
                     :height 200
                     :weight 'normal)
 (set-face-attribute 'variable-pitch nil
@@ -32,12 +36,14 @@
 (scroll-bar-mode -1)
 (setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
-(use-package modus-themes
+(use-package dracula-theme
   :config
-  (load-theme 'modus-vivendi-tinted 't))
+  (load-theme 'dracula 't))
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode))
+
 ;; 2 emacs command handling
+
 (use-package savehist
   :init
   (savehist-mode 1))

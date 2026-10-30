@@ -33,13 +33,10 @@ emacs --daemon &
 
 # Float all windows by default, centered, with a consistent initial size
 ~/.config/scripts/togwall --reset &
+# is this the reason why it bugs and doesnt launch picom by default?
 
-# Kill any existing bar instances first
-pgrep -x lemonbar && killall lemonbar
-
-# Launch bspwm lemonbar script in background
-~/.config/scripts/lemonbar.sh &
-
+# dusnt for notifs
 dunst &
-# Example inside i3 config or bspwmrc
-picom --config ~/.config/picom/picom.conf &
+
+# picom
+# picom --config ~/.config/picom/picom.conf &

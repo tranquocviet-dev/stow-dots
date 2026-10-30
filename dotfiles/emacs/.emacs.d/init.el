@@ -15,8 +15,8 @@
 (setq use-package-always-ensure t) ; Automatically install missing packages via MELPA
 ;; visual
 (set-face-attribute 'default nil
-                    :family "Iosevka"
-                    :height 140
+                    :family "Iosevka Slab"
+                    :height 200
                     :weight 'normal)
 (set-face-attribute 'variable-pitch nil
   		    :family "Iosevka Aile"

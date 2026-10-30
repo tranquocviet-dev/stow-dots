@@ -13,7 +13,7 @@
     "uptime",
     {
     	"type": "packages",
-    	"format": "{nix-system} (nix-system)",
+    	"format": "{dpkg}",
     },
     "shell",
     "wm",
@@ -28,17 +28,12 @@
       "format": "{size-used} / {size-total} ({size-percentage})",
       "key": "Disk",
     },
-    {
-      "type": "disk",
-      "format": "{size-free}",
-      "key": "Free",
-    },
     "break",
     "colors"
   ],
   "logo": {
     "source": "~/.config/fastfetch/rin.jpg",
     "type": "kitty",
-    "height": 18,
+    "height": 16,
   }
 }

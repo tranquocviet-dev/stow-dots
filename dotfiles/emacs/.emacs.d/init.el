@@ -34,11 +34,11 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode 1)
-(use-package dracula-theme
+(use-package catppuccin-theme
   :config
-  (load-theme 'dracula 't))
+  (setq catppuccin-flavor 'latte) ;; or 'latte, 'macchiato, or 'mocha
+  (catppuccin-reload))
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode))
 
@@ -138,23 +138,25 @@
   :mode "\\.nix\\'")
 (use-package typst-ts-mode
   :ensure t
-  :mode "\\.typ\\'"
-  :hook ((typst-ts-mode . eglot-ensure)))
+  :mode "\\.typ\\'")
 (use-package qml-mode
   :mode "\\.qml$")
+(use-package go-mode
+  :ensure t
+  :mode "\\.go\\'")
 
 ;; 5.1 lsp
 
-(use-package eglot
-  :hook (((prog-mode) . (lambda ()
-                          (unless (derived-mode-p 'emacs-lisp-mode)
-                            (eglot-ensure))))
-         (typst-ts-mode . eglot-ensure))
-  :config
-  (add-to-list 'eglot-server-programs '(nix-mode . ("nixd")))
-  (add-to-list 'eglot-server-programs '(typst-ts-mode . ("tinymist" "lsp")))
-  (add-to-list 'eglot-server-programs '((qml-mode qml-ts-mode) . ("qmlls" "-E")))
-  (add-to-list 'eglot-server-programs '(simpc-mode . ("clangd"))))
+;; (use-package eglot
+;;   :hook (((prog-mode) . (lambda ()
+;;                           (unless (derived-mode-p 'emacs-lisp-mode)
+;;                             (eglot-ensure))))
+;;          (typst-ts-mode . eglot-ensure))
+;;   :config
+;;   (add-to-list 'eglot-server-programs '(nix-mode . ("nixd")))
+;;   (add-to-list 'eglot-server-programs '(typst-ts-mode . ("tinymist" "lsp")))
+;;   (add-to-list 'eglot-server-programs '((qml-mode qml-ts-mode) . ("qmlls" "-E")))
+;;   (add-to-list 'eglot-server-programs '(simpc-mode . ("clangd"))))
 
 ;; 6 misc
 
@@ -276,3 +278,23 @@
         org-appear-auto-emphasis t
         org-appear-auto-entities t
         org-appear-auto-keywords t))
+(use-package dumb-jump
+  :ensure t
+  :init
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+  :config
+  (setq dumb-jump-prefer-searcher 'rg))
+;; Global indentation settings
+(setq-default tab-width 4)          ; Change 4 to your preferred width (e.g., 2 or 8)
+(setq-default indent-tabs-mode t)   ; Set to t to use actual tabs, or nil to use spaces
+(use-package nerd-icons)
+(use-package neotree
+  :ensure t
+  :config
+  (setq neo-theme 'nerd-icons)
+  (setq neo-vc-integration '(face char)))
+(add-hook 'neo-after-create-hook
+          (lambda (_string)
+            (save-selected-window
+              (neo-global--select-window)
+              (neotree-refresh))))

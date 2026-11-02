@@ -19,8 +19,8 @@ symbol = ""
 truncation_symbol = ""
 
 [git_status]
-format = "[[($conflicted$untracked$modified$staged$renamed$deleted)](218)($ahead_behind$stashed)]($style)"
-style = "cyan"
+format = "[$conflicted$untracked$modified$staged$renamed$deleted$ahead_behind$stashed]($style)"
+style = "red"
 conflicted = " con"
 untracked = " unt"
 modified = " mod"
@@ -38,8 +38,10 @@ style = "bright-black"
 [username]
 show_always = true
 format = '[$user]($style)'
+style_user = "bright-black"
 
 [hostname]
 format = "[$hostname]($style)"
+style = "bright-black"
 disabled = false
 ssh_only = false

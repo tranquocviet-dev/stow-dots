@@ -5,8 +5,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(adwaita-dark-theme apheleia catppuccin-theme company dracula-theme dumb-jump
-						elfeed emms envrc go-mode grey-paper-theme
+   '(adwaita-dark-theme apheleia cape catppuccin-theme company dracula-theme
+						dumb-jump elfeed emms envrc go-mode grey-paper-theme
 						gruber-darker-theme gruvbox-theme
 						highlight-indent-guides indent-bars magit mixed-pitch
 						modus-themes molokai-theme monokai-theme move-text

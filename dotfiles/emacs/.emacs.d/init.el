@@ -78,6 +78,14 @@
   :config
   (setq completion-preview-minimum-symbol-length 2)
   (global-completion-preview-mode 1))
+th
+(use-package cape
+  :ensure t
+  :init
+  ;; Add useful CAPFs to the global completion list
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-keyword))
 
 ;; 3.2 company-mode
 

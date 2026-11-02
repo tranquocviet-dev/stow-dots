@@ -205,9 +205,6 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 bar {
 		position top
         status_command i3status
-		mode hide
-		hidden_state hide
-		modifier Mod1
 }
 
 default_border none

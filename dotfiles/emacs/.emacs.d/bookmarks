@@ -3,9 +3,9 @@
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
 (("org-capture-last-stored"
- (filename . "~/notess/20261028130841-project_management_7.org")
- (front-context-string)
- (rear-context-string . "ct-management-7\n")
- (position . 98)
- (last-modified 27361 37226 941077 139000))
+  (filename . "~/notess/20261104135149-project_management_cw_wbs.org")
+  (front-context-string)
+  (rear-context-string . "nagement-cw-wbs\n")
+  (position . 103)
+  (last-modified 27370 54791 812658 267000))
 )

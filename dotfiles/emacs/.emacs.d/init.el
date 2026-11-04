@@ -87,10 +87,10 @@
 
 ;; 3.2 company-mode
 
-;; (use-package company
-;;   :ensure t
-;;   :config
-;;   (global-company-mode nil))
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode nil))
 
 ;; 4 format-on-save
 

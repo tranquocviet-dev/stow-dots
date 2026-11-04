@@ -35,10 +35,9 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode 1)
-(use-package catppuccin-theme
+(use-package gruber-darker-theme
   :config
-  (setq catppuccin-flavor 'latte) ;; or 'latte, 'macchiato, or 'mocha
-  (catppuccin-reload))
+  (load-theme 'gruber-darker t))
 (use-package mixed-pitch
   :hook (org-mode . mixed-pitch-mode))
 

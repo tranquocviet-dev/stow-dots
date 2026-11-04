@@ -1,0 +1,25 @@
+touch index.php
+touch jokes.css
+mkdir includes
+mkdir db
+mkdir admin
+ls
+lsw
+ls
+touch includes/DatabaseConnection.php
+touch includes/DatabaseFunctions.php
+mkdir templates
+touch templates/layout.html.php
+touch templates/jokes.html.php
+touch templates/layout_admin.html.php
+touch templates/jokes_admin.html.php
+touch templates/addjoke.html.php
+touch templates/editjoke.html.php
+touch templates/addauthor.html.php
+touch admin/index.php
+touch addjoke/index.php
+touch admin/addjoke.php
+touch admin/editjoke.php
+touch admin/deletejoke.php
+touch admin/addauthor.php
+exit

@@ -52,6 +52,6 @@
 # resize-overlay-duration = 4s 200ms
 gtk-single-instance = true
 window-decoration = false
-theme = Gruber Darker
-font-family = "Iosevka"
-font-size = 20
+theme = Modus Operandi Tinted
+font-family = "JetBrains Mono"
+font-size = 16

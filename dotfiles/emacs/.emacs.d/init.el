@@ -18,35 +18,115 @@
 
 ;; visual
 
-(set-face-attribute 'default nil
-                    :family "Iosevka"
-                    :height 200
-                    :weight 'normal)
-(set-face-attribute 'variable-pitch nil
-  		    :family "Iosevka Aile"
-  		    :height 1.0
-  		    :weight 'normal)
-(set-face-attribute 'fixed-pitch nil
-  		    :inherit 'default)
-(set-face-attribute 'line-number nil :inherit 'default :height 1.0)
-(set-face-attribute 'line-number-current-line nil :inherit 'default :height 1.0)
+(defun disable-modeline ()
+  (interactive)
+  (setq-default mode-line-format '()))
+
+(defun default-modeline ()
+  (interactive)
+  (setq-default mode-line-format
+  '("%e"
+    mode-line-front-space
+    (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
+                 display (min-width (5.0)))
+    mode-line-frame-identification
+    mode-line-buffer-identification
+    " "
+	tm
+    mode-line-position
+    (vc-mode vc-mode)
+    " "
+    mode-line-modes
+    mode-line-misc-info
+    mode-line-end-spaces)))
+
+(defun dice-modeline ()
+  (interactive)
+  (setq-default mode-line-format
+                '("%e"
+                  mode-line-front-space
+                  (:propertize ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
+                               display (min-width (5.0)))
+                  mode-line-frame-identification
+                  mode-line-buffer-identification
+                  (vc-mode vc-mode)
+                  " "
+                  (:eval mode-name)
+                  mode-line-misc-info
+                  mode-line-end-spaces)))
+
+(use-package keycast
+  :ensure t)
+
+(global-set-key (kbd "C-c C-m C-d")
+				#'disable-modeline)
+(global-set-key (kbd "C-c C-m C-e")
+				#'dice-modeline)
+(add-hook 'emacs-startup-hook #'dice-modeline)
+
+(use-package fontaine
+  :ensure t
+  :config
+  ;; Define your font configurations (presets)
+  (setq fontaine-presets
+        '((coding
+           :default-family "JetBrains Mono"
+           :default-height 140
+           :fixed-pitch-family "JetBrains Mono"
+           :variable-pitch-family "Inter")
+          (reading
+           :default-family "Inter"
+           :default-height 140
+           :fixed-pitch-family "JetBrains Mono"
+           :variable-pitch-family "Inter")
+          (presentation
+           :default-family "JetBrains Mono"
+           :default-height 180
+           :fixed-pitch-family "JetBrains Mono"
+           :variable-pitch-family "Inter")
+          (t ; Fallback/default values for unspecified properties
+           :default-family "JetBrains Mono"
+           :default-height 140)))
+
+  ;; Persist settings across sessions and theme changes
+  (fontaine-mode 1)
+  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'coding)))
+(use-package mixed-pitch
+  :ensure t
+  :hook (text-mode . mixed-pitch-mode)
+  (org-mode . mixed-pitch-mode))
+(use-package olivetti
+  :ensure t
+  :hook (text-mode . olivetti-mode)
+  :config
+  ;; Adjust the body width (default is usually 80 columns)
+  (setq olivetti-body-width 80))
+(use-package emacs
+  :config
+  ;; Wrap lines at word boundaries instead of cutting words in half
+  (setq-default word-wrap t)
+
+  ;; Automatically turn on visual line wrapping in all text/prose modes
+  :hook (text-mode . visual-line-mode))
 (setq inhibit-startup-screen t)
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(global-display-line-numbers-mode 1)
-(use-package gruber-darker-theme
+(add-hook 'prog-mode-hook #'display-line-numbers-mode 1)
+(use-package modus-themes
   :config
-  (load-theme 'gruber-darker t))
-(use-package mixed-pitch
-  :hook (org-mode . mixed-pitch-mode))
+  (load-theme 'modus-operandi-tinted t))
+
+(setq whitespace-style
+   (quote
+    (face tabs spaces trailing space-before-tab newline indentation empty space-after-tab space-mark tab-mark)))
 
 ;; 2 emacs command handling
 
 (use-package savehist
   :init
   (savehist-mode 1))
-(fido-mode 1)
+(fido-mode 0)
 (use-package minibuffer
   :ensure nil
   :custom
@@ -91,7 +171,9 @@
   :ensure t
   :config
   (global-company-mode nil))
-
+(with-eval-after-load 'company
+  (setq company-frontends
+        (delq 'company-preview-frontend company-frontends)))
 ;; 4 format-on-save
 
 ;; (use-package apheleia
@@ -175,15 +257,27 @@
 (use-package magit
   :bind
   ("C-x g" . magit-status))
-(use-package org-roam
-  :custom
-  (org-roam-directory (file-truename "~/notess"))
-  (org-roam-completion-everywhere t)
-  :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find)
-         ("C-c n i" . org-roam-node-insert))
+
+(use-package denote
+  :ensure t
+  :hook (dired-mode . denote-dired-mode)
+  :bind
+  (("C-c n n" . denote)
+   ("C-c n o" . denote-open-or-create)
+   ("C-c n r" . denote-rename-file)
+   ("C-c n l" . denote-link-or-create)
+   ("C-c n b" . denote-backlinks)
+   ("C-c n d" . denote-dired)
+   ("C-c n g" . denote-grep))
   :config
-  (org-roam-db-autosync-mode))
+  (setq denote-directory (expand-file-name "~/notess/"))
+
+  ;; Automatically rename Denote buffers when opening them so that
+  ;; instead of their long file name they have, for example, a literal
+  ;; "[D]" followed by the file's title.  Read the docstring of
+  ;; `denote-rename-buffer-format' for how to modify this.
+  (denote-rename-buffer-mode 1))
+
 (use-package move-text
   :ensure t
   :bind
@@ -248,6 +342,19 @@
           "https://www.gamingonlinux.com/article_rss.php"
           "https://www.redhat.com/en/blog/rss.xml"
           "https://archlinux.org/news/news.xml")))
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode 1)
+  :config
+  ;; Enable cycling for vertico-next/previous candidates
+  (setq vertico-cycle t))
+
+;; Enable Marginalia for rich minibuffer annotations (file permissions, descriptions, etc.)
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode 1))
 (use-package orderless
   :ensure t
   :custom
@@ -270,9 +377,10 @@
 (add-hook 'before-save-hook #'delete-trailing-whitespace)
 
 (use-package smartparens
-  :ensure t
+  :ensure
+  :hook (prog-mode)
   :config
-  (smartparens-global-mode t))
+  (add-hook 'emacs-lisp-mode-hook (lambda () (smartparens-mode -1))))
 (setq modus-themes-italic-constructs t)
 (setq modus-themes-bold-constructs t)
 (setq modus-themes-mixed-fonts t) ; Helps when mixing fixed-pitch and variable-pitch fonts in Org mode
@@ -304,3 +412,8 @@
             (save-selected-window
               (neo-global--select-window)
               (neotree-refresh))))
+
+(defun insert-time ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+(setq eww-homepage "https://lite.duckduckgo.com/lite")

@@ -35,7 +35,7 @@ super + shift + Escape
 
 # Toggle focused window between floating and tiled
 super + space
-# 	bspc node -t ~floating
+ 	bspc node -t ~floating
 
 # Toggle all windows on the current desktop between floating and tiled
 super + t
@@ -54,10 +54,11 @@ super + Return
 	kitty
 
 super + shift + z
-	boomer
+	~/builds/boomer/boomer
 
+# restart keyboard daemon
 super + shift + r
-	pkill -USR1 sxhkd
+	pkill -USR1 sxhkd && notify-send "sxkhd restarted"
 
 # Focus node (window) in a direction (Vim keys)
 super + {h,j,k,l}

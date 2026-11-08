@@ -38,6 +38,7 @@
   (let ((icons-alist
          '((emacs-lisp-mode . "λ")
            (lisp-interaction-mode . "λ")
+           (compilation-mode . "⚙️")
            (shell-mode . "$"))))
     (or (cdr (assq mode icons-alist)) "•")))
 

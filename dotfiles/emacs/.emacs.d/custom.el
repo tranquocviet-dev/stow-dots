@@ -11,10 +11,11 @@
 						gruvbox-theme highlight-indent-guides indent-bars
 						keycast magit marginalia mixed-pitch modus-themes
 						molokai-theme monokai-theme move-text multiple-cursors
-						neotree nerd-icons nix-mode olivetti orderless
-						org-appear org-roam pdf-tools php-mode qml-mode
-						smartparens solarized-theme typst-ts-mode vertico vterm
-						web-mode zenburn-theme)))
+						neotree nerd-icons nerd-icons-mode-line nix-mode
+						olivetti orderless org-appear org-roam pdf-tools
+						php-mode qml-mode smartparens solarized-theme
+						spacious-padding typst-ts-mode vertico vterm web-mode
+						zenburn-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

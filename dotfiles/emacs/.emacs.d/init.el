@@ -18,6 +18,35 @@
 
 ;; visual
 
+(setq display-time-format "%a %d %b, %H:%M"
+      display-time-default-load-average nil)
+(display-time-mode t)
+
+(defun my-mode-line-selected-p ()
+  "Return t if evaluating for the currently selected window."
+  (eq (selected-window) (old-selected-window)))
+
+(defun my-modeline-vc-info ()
+  "Return `vc-mode` string if active and valid."
+  (when (and (stringp vc-mode)
+             (not (string-match-p "invalid" vc-mode))
+             (not (string-empty-p (string-trim vc-mode))))
+    vc-mode))
+
+(defun my-modeline-text-symbol-for-mode (mode)
+  "Return a clean text-based or Unicode symbol for MODE."
+  (let ((icons-alist
+         '((emacs-lisp-mode . "λ")
+           (lisp-interaction-mode . "λ")
+           (shell-mode . "$"))))
+    (or (cdr (assq mode icons-alist)) "•")))
+
+(defun my-modeline-major-mode-text-icon ()
+  "Return a text-based symbol and cleaned name for the current major mode."
+  (let ((symbol (my-modeline-text-symbol-for-mode major-mode))
+        (mode-str (format-mode-line mode-name)))
+    (format "%s %s" symbol mode-str)))
+
 (defun disable-modeline ()
   (interactive)
   (setq-default mode-line-format '()))
@@ -49,14 +78,16 @@
                                display (min-width (5.0)))
                   mode-line-frame-identification
                   mode-line-buffer-identification
-                  (vc-mode vc-mode)
-                  " "
-                  (:eval mode-name)
-                  mode-line-misc-info
-                  mode-line-end-spaces)))
-
-(use-package keycast
-  :ensure t)
+				  " "
+				  (:eval (my-modeline-major-mode-text-icon))
+                  ;; "["(:eval mode-name)"]"
+				  " "
+				  mode-line-format-right-align
+				  (:eval (when (my-mode-line-selected-p)
+						   (my-modeline-vc-info)))
+				  " "
+				  (:eval (when (my-mode-line-selected-p)
+						   (list mode-line-misc-info mode-line-end-spaces))))))
 
 (global-set-key (kbd "C-c C-m C-d")
 				#'disable-modeline)
@@ -70,23 +101,21 @@
   ;; Define your font configurations (presets)
   (setq fontaine-presets
         '((coding
-           :default-family "JetBrains Mono"
-           :default-height 140
-           :fixed-pitch-family "JetBrains Mono"
-           :variable-pitch-family "Inter")
+           :default-height 140)
           (reading
-           :default-family "Inter"
-           :default-height 140
-           :fixed-pitch-family "JetBrains Mono"
-           :variable-pitch-family "Inter")
+           :default-family "Aporetic Sans"
+           :default-height 140)
           (presentation
-           :default-family "JetBrains Mono"
-           :default-height 180
-           :fixed-pitch-family "JetBrains Mono"
-           :variable-pitch-family "Inter")
+           :default-height 180)
           (t ; Fallback/default values for unspecified properties
-           :default-family "JetBrains Mono"
-           :default-height 140)))
+           :default-family "Aporetic Sans Mono"
+		   :default-weight regular
+           :default-height 140
+		   :fixed-pitch-height 1.0
+		   :variable-pitch-family "Aporetic Sans"
+		   :variable-pitch-height 1.0
+		   :bold-weight bold
+		   :italic-slant italic)))
 
   ;; Persist settings across sessions and theme changes
   (fontaine-mode 1)
@@ -114,8 +143,18 @@
 (scroll-bar-mode -1)
 (add-hook 'prog-mode-hook #'display-line-numbers-mode 1)
 (use-package modus-themes
+  :init
+  (setq modus-themes-bold-constructs t)
+  (setq modus-themes-italic-constructs t)
+  (setq modus-themes-common-palette-overrides
+        '((fringe unspecified)
+          (window-divider unspecified)))
   :config
   (load-theme 'modus-operandi-tinted t))
+
+(use-package spacious-padding
+  :config
+  (spacious-padding-mode t))
 
 (setq whitespace-style
    (quote
@@ -129,6 +168,11 @@
 (fido-mode 0)
 (use-package minibuffer
   :ensure nil
+  :bind
+  ( :map completion-in-region-mode-map
+	("M-i" . minibuffer-choose-completion)
+	("M-n" . minibuffer-next-completion)
+	("M-p" . minibuffer-previous-completion))
   :custom
   (completion-show-help nil)
   (completion-show-inline-help nil)
@@ -139,7 +183,9 @@
   (completions-max-height 12)
   (completion-auto-select nil)
   (completions-sort 'historical)
+  (completion-eager-update t) ;; very important, emacs 31 and above only
   (minibuffer-visible-completions t))
+(setq completions-highlight-face 'completions-highlight)
 
 ;; 3 completion suite
 ;; 3.1 completion-preview-mode (native)
@@ -167,13 +213,13 @@
 
 ;; 3.2 company-mode
 
-(use-package company
-  :ensure t
-  :config
-  (global-company-mode nil))
-(with-eval-after-load 'company
-  (setq company-frontends
-        (delq 'company-preview-frontend company-frontends)))
+;; (use-package company
+;;   :ensure t
+;;   :config
+;;   (global-company-mode nil))
+;; (with-eval-after-load 'company
+;;   (setq company-frontends
+;;         (delq 'company-preview-frontend company-frontends)))
 ;; 4 format-on-save
 
 ;; (use-package apheleia
@@ -293,6 +339,10 @@
   (emms-all)
   (emms-default-players)
   (emms-mpris-enable)
+  (setq emms-track-description-function
+        (lambda (track)
+          (let ((title (emms-track-get track 'info-title)))
+            (or title (emms-track-simple-description track)))))
   :custom
   (emms-browser-covers #'emms-browser-cache-thumbnail-async)
   :bind
@@ -417,3 +467,6 @@
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
 (setq eww-homepage "https://lite.duckduckgo.com/lite")
+;; Respect case in buffer searching and in-buffer completion (Dabbrev / CAPF)
+(setq-default case-fold-search t)
+(setq dabbrev-case-fold-search nil) ; Keeps dabbrev case-exact to your input
